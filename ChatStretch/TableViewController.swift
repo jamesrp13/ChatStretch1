@@ -18,6 +18,22 @@ class TableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        firebase.childByAppendingPath("users/\(currentUserID)").observeSingleEventOfType(.Value, withBlock: { (data) -> Void in
+            if let data = data.value as? [String:AnyObject] {
+                if let groupsDictionary = data["groups"] as? [String: AnyObject] {
+                    let groups = groupsDictionary.keys
+                    for groupID in groups {
+                        self.firebase.childByAppendingPath("groups/\(groupID)").observeSingleEventOfType(.Value, withBlock: { (data) -> Void in
+                            if let data = data.value as? [String: AnyObject] {
+                                print(groupID)
+                                print(data)
+                            }
+                        })
+                    }
+                }
+            }
+        })
+        
     }
 
 
